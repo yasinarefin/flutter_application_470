@@ -166,4 +166,21 @@ class WebServices {
     if (response.containsKey('message')) return response['message'];
     return 'error';
   }
+
+  // get participation status
+  static Future<Map<String, dynamic>> getParticipationStatus(
+      String token, String quizID) async {
+    var headers = {
+      "Authorization": token,
+      "QuizID": quizID,
+    };
+    final response = await HTTPUtils.get(
+        path: '/quiz/participation_status/', headers: headers);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> obj = Map.castFrom(jsonDecode(response.body));
+      return obj;
+    }
+    return {'error': 'no participation found'};
+  }
 }

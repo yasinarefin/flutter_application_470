@@ -9,6 +9,7 @@ class SingleChoiceQuestion extends StatefulWidget {
       : super(key: key) {
     singleChoiceController =
         SingleChoiceController(questionModel: questionModel);
+    singleChoiceController.init();
   }
   @override
   _SingleChoiceQuestionState createState() => _SingleChoiceQuestionState();

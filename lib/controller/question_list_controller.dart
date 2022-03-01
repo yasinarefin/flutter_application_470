@@ -1,3 +1,4 @@
+import 'package:flutter_application_470/controller/participation_status_controller.dart';
 import 'package:flutter_application_470/controller/user_controller.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
@@ -9,9 +10,16 @@ class QuestionListController {
   final QuizModel quizModel;
   final UserModelController uc = Get.find();
   QuestionListController({required this.quizModel}) {}
+
   Future<List<QuestionModel>> getQuestions() async {
     var list =
         await WebServices.getQuestions(uc.getUser().token, quizModel.quizId);
+
+    // also load participation status for selected answers
+
+    Get.put(ParticipationStatusController());
+    ParticipationStatusController psc = Get.find();
+    await psc.loadData(quizModel.quizId);
     return list;
   }
 }
