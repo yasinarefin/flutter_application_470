@@ -17,7 +17,7 @@ class QuestionListController {
     // also load participation status for selected answers
 
     ParticipationStatusController psc = ParticipationStatusController();
-    await psc.loadData(quizModel.quizId);
+    await psc.loadData(quizModel.quizId, quizModel);
     Get.put(psc);
     return list;
   }
