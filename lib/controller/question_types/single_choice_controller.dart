@@ -11,9 +11,8 @@ class SingleChoiceController {
   final ParticipationStatusController psc = Get.find();
   int selectedIndex = -1;
   bool submitButtonOn = true;
-  SingleChoiceController({required this.questionModel});
-
-  void init() {
+  SingleChoiceController({required this.questionModel}) {
+    // check if question is alread submitted
     if (psc.selectedAnswers.isEmpty == false) {
       List<dynamic> c = psc.selectedAnswers[questionModel.questionNo];
       if (c.isEmpty == false) {

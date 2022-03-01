@@ -159,6 +159,9 @@ class WebServices {
         'Authorization': token,
       },
     );
+    if (submitResponse.statusCode == 500) {
+      return "error";
+    }
     if (submitResponse.statusCode == 200) {
       return 'ok';
     }

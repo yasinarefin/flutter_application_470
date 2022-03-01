@@ -14,6 +14,10 @@ class ValueInputQuestion extends StatefulWidget {
 }
 
 class _ValueInputQuestionState extends State<ValueInputQuestion> {
+  void callback() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,7 +31,9 @@ class _ValueInputQuestionState extends State<ValueInputQuestion> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: widget.valueInputController.submitButtonOn
+              ? () => widget.valueInputController.submit(callback)
+              : null,
           child: const Text('Submit'),
         ),
       ],

@@ -16,6 +16,10 @@ class MultipleChoiceQuestion extends StatefulWidget {
 }
 
 class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
+  void callback() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,7 +29,9 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
           multipleChoiceController: widget.multiChoiceController,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: widget.multiChoiceController.submitButtonOn
+              ? () => widget.multiChoiceController.submit(callback)
+              : null,
           child: const Text('Submit'),
         ),
       ],
