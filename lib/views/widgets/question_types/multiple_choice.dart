@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_470/controller/question_list_controller.dart';
 import 'package:flutter_application_470/controller/question_types/multiple_choice_controller.dart';
 import 'package:flutter_application_470/controller/question_types/single_choice_controller.dart';
 import 'package:flutter_application_470/models/question_model.dart';
+import 'package:get/get.dart';
 
 class MultipleChoiceQuestion extends StatefulWidget {
   final QuestionModel questionModel;
   late MultipleChoiceController multiChoiceController;
+  final QuestionListController questionListController = Get.find();
   MultipleChoiceQuestion({Key? key, required this.questionModel})
       : super(key: key) {
     multiChoiceController =
-        MultipleChoiceController(questionModel: questionModel);
+        questionListController.cons[questionModel.questionNo];
+    //multiChoiceController =
+    //MultipleChoiceController(questionModel: questionModel);
   }
   @override
   _MultipleChoiceQuestionState createState() => _MultipleChoiceQuestionState();

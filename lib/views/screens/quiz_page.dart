@@ -18,10 +18,13 @@ class QuizPage extends StatelessWidget {
     QuestionListController questionListController =
         QuestionListController(quizModel: quizModel);
 
+    Get.put(questionListController);
+    QuestionListController qlc = Get.find();
+
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<List<QuestionModel>>(
-            future: questionListController.getQuestions(),
+            future: qlc.getQuestions(),
             builder: (ctx, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError || !snapshot.hasData) {

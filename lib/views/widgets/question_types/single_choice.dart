@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_470/controller/question_list_controller.dart';
 import 'package:flutter_application_470/controller/question_types/single_choice_controller.dart';
 import 'package:flutter_application_470/models/question_model.dart';
+import 'package:get/get.dart';
 
 class SingleChoiceQuestion extends StatefulWidget {
   final QuestionModel questionModel;
   late SingleChoiceController singleChoiceController;
+  final QuestionListController questionListController = Get.find();
   SingleChoiceQuestion({Key? key, required this.questionModel})
       : super(key: key) {
     singleChoiceController =
-        SingleChoiceController(questionModel: questionModel);
+        questionListController.cons[questionModel.questionNo];
   }
   @override
   _SingleChoiceQuestionState createState() => _SingleChoiceQuestionState();

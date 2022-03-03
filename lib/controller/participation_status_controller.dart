@@ -1,7 +1,11 @@
+import 'package:flutter_application_470/controller/question_types/multiple_choice_controller.dart';
+import 'package:flutter_application_470/controller/question_types/single_choice_controller.dart';
+import 'package:flutter_application_470/controller/question_types/value_input_controller.dart';
 import 'package:flutter_application_470/controller/user_controller.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
 import 'package:flutter_application_470/services/web_services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_application_470/models/question_model.dart';
 
 // this controller loads  participation status and saves it
 class ParticipationStatusController extends GetxController {
