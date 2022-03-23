@@ -28,6 +28,7 @@ class QuizPage extends StatelessWidget {
             builder: (ctx, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError || !snapshot.hasData) {
+                  print('from  here');
                   return const Text('Error');
                 } else if (snapshot.data != null) {
                   var list = snapshot.data as List<QuestionModel>;

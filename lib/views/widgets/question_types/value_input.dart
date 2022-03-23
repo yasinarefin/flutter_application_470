@@ -36,11 +36,22 @@ class _ValueInputQuestionState extends State<ValueInputQuestion> {
             hintText: 'Enter ans',
           ),
         ),
-        ElevatedButton(
-          onPressed: widget.valueInputController.submitButtonOn
-              ? () => widget.valueInputController.submit(callback)
-              : null,
-          child: const Text('Submit'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: widget.valueInputController.saveButtonOn == true
+                  ? () => widget.valueInputController.save(callback)
+                  : null,
+              child: const Text('Save'),
+            ),
+            ElevatedButton(
+              onPressed: widget.valueInputController.submitButtonOn == true
+                  ? () => widget.valueInputController.submit(callback)
+                  : null,
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ],
     );

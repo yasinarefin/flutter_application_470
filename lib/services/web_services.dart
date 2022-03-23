@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_470/models/participation_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
 import 'package:flutter_application_470/models/sign_up_form.dart';
@@ -149,7 +150,35 @@ class WebServices {
   ) async {
     print(ans);
     final submitResponse = await HTTPUtils.post(
-      path: '/quiz/participate/',
+      path: '/quiz/submit_ans/',
+      body: jsonEncode(<String, dynamic>{
+        'quiz_id': quizID,
+        'question_no': questionNo,
+        'answer': ans,
+      }),
+      headers: {
+        'Authorization': token,
+      },
+    );
+    if (submitResponse.statusCode == 500) {
+      return "error";
+    }
+    if (submitResponse.statusCode == 200) {
+      return 'ok';
+    }
+    Map<String, dynamic> response = jsonDecode(submitResponse.body);
+    if (response.containsKey('message')) return response['message'];
+    return 'error';
+  }
+
+  static Future<String> savedAnswer(
+    String token,
+    String quizID,
+    int questionNo,
+    List<dynamic> ans,
+  ) async {
+    final submitResponse = await HTTPUtils.post(
+      path: '/quiz/save_ans/',
       body: jsonEncode(<String, dynamic>{
         'quiz_id': quizID,
         'question_no': questionNo,
@@ -182,7 +211,14 @@ class WebServices {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> obj = Map.castFrom(jsonDecode(response.body));
-      return obj;
+      ParticipationModel participationModel = ParticipationModel(
+        quizId: obj['quiz'],
+        userEmail: obj['user'],
+        submittedAnswers: obj['answers'],
+        savedAnswers: obj['saved_answers'],
+        score: obj['score'],
+      );
+      return {'result': participationModel};
     }
     return {'error': 'no participation found'};
   }
