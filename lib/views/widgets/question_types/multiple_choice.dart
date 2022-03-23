@@ -33,11 +33,22 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
         MultipleChoiceOptions(
           multipleChoiceController: widget.multiChoiceController,
         ),
-        ElevatedButton(
-          onPressed: widget.multiChoiceController.submitButtonOn
-              ? () => widget.multiChoiceController.submit(callback)
-              : null,
-          child: const Text('Submit'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: widget.multiChoiceController.saveButtonOn == true
+                  ? () => widget.multiChoiceController.save(callback)
+                  : null,
+              child: const Text('Save'),
+            ),
+            ElevatedButton(
+              onPressed: widget.multiChoiceController.submitButtonOn == true
+                  ? () => widget.multiChoiceController.submit(callback)
+                  : null,
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ],
     );

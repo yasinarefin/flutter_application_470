@@ -11,21 +11,30 @@ class MultipleChoiceController {
   final ParticipationStatusController psc = Get.find();
   final UserModelController uc = Get.find();
   bool submitButtonOn = true;
+  bool saveButtonOn = true;
   MultipleChoiceController({required this.questionModel}) {
     for (int i = 0; i < questionModel.options.length; i++) {
       checkBoxStates.add(false);
     }
-
-    // check if question is alread submitted
-    if (psc.selectedAnswers.isEmpty == false) {
-      print(questionModel.questionNo);
-      List<dynamic> c = psc.selectedAnswers[questionModel.questionNo];
+    // update saved answers
+    if (psc.participationModel.savedAnswers.isEmpty == false) {
+      List<dynamic> c =
+          psc.participationModel.savedAnswers[questionModel.questionNo];
 
       if (c.isEmpty == false) {
-        submitButtonOn = false;
         for (int i in c) {
           checkBoxStates[i] = true;
         }
+      }
+    }
+
+    // now disable buttons if already submitted
+    if (psc.participationModel.submittedAnswers.isEmpty == false) {
+      List<dynamic> c =
+          psc.participationModel.submittedAnswers[questionModel.questionNo];
+      if (c.isEmpty == false) {
+        submitButtonOn = false;
+        saveButtonOn = false;
       }
     }
   }
@@ -51,6 +60,32 @@ class MultipleChoiceController {
       print('failed');
       Get.snackbar('Error', response);
     }
+    callback();
+  }
+
+  void save(Function callback) async {
+    saveButtonOn = false;
+    callback();
+
+    List<int> selectedAns = [];
+    checkBoxStates.asMap().forEach((key, value) {
+      if (value) {
+        selectedAns.add(key);
+      }
+    });
+
+    String response = await WebServices.savedAnswer(
+      uc.getUser().token,
+      questionModel.quizID,
+      questionModel.questionNo,
+      selectedAns,
+    );
+
+    if (response == 'ok') {
+    } else {
+      Get.snackbar('Error', response);
+    }
+    saveButtonOn = true;
     callback();
   }
 }
