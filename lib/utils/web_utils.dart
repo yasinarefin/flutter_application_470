@@ -4,8 +4,8 @@ import 'package:flutter_application_470/models/participation_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
 import 'package:flutter_application_470/models/sign_up_form.dart';
-import 'package:flutter_application_470/http_utils.dart';
-import 'package:flutter_application_470/services/storage_services.dart';
+import 'package:flutter_application_470/utils/http_utils.dart';
+import 'package:flutter_application_470/utils/storage_utils.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 

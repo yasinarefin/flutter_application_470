@@ -1,6 +1,6 @@
 import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/sign_up_form.dart';
-import 'package:flutter_application_470/services/web_services.dart';
+import 'package:flutter_application_470/utils/web_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

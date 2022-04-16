@@ -1,7 +1,7 @@
 import 'package:flutter_application_470/controller/screen_controller/quiz_page_controller.dart';
 import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
-import 'package:flutter_application_470/services/web_services.dart';
+import 'package:flutter_application_470/utils/web_utils.dart';
 import 'package:get/get.dart';
 
 import '../user_controller/user_controller.dart';

@@ -1,10 +1,13 @@
 import 'package:flutter_application_470/controller/user_controller/user_controller.dart';
 import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/user_model.dart';
-import 'package:flutter_application_470/services/storage_services.dart';
-import 'package:flutter_application_470/services/web_services.dart';
+import 'package:flutter_application_470/utils/web_utils.dart';
+import 'package:flutter_application_470/utils/storage_utils.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+/* this controller is used for initializing the logged in user  which will later be used  
+all over the app */
 
 class UserIntialize {
   // puts usermodel in getx controller

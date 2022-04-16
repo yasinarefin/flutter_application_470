@@ -6,7 +6,7 @@ import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/participation_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
-import 'package:flutter_application_470/services/web_services.dart';
+import 'package:flutter_application_470/utils/web_utils.dart';
 import 'package:get/get.dart';
 
 class QuizPageController extends GetxController {
