@@ -1,14 +1,14 @@
+import 'package:flutter_application_470/controller/screen_controller/quiz_page_controller.dart';
+import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/services/web_services.dart';
 import 'package:get/get.dart';
-
-import '../participation_status_controller.dart';
-import '../user_controller.dart';
+import '../user_controller/user_controller.dart';
 
 class MultipleChoiceController {
   final QuestionModel questionModel;
-  final List<bool> checkBoxStates = [];
-  final ParticipationStatusController psc = Get.find();
+  final List<bool> checkBoxStates = []; // holds selected checkbox indexes
+  final QuizPageController psc = Get.find();
   final UserModelController uc = Get.find();
   bool submitButtonOn = true;
   bool saveButtonOn = true;
@@ -47,18 +47,17 @@ class MultipleChoiceController {
         selectedAns.add(key);
       }
     });
-    String response = await WebServices.submitAnswer(
+    ApiResponseModel response = await WebServices.submitAnswer(
       uc.getUser().token,
       questionModel.quizID,
       questionModel.questionNo,
       selectedAns,
-    );
+    ); // api call to submit answer
 
-    if (response == 'ok') {
-    } else {
+    if (response.statusCode != 200) {
       submitButtonOn = true;
-      print('failed');
-      Get.snackbar('Error', response);
+      saveButtonOn = true;
+      Get.snackbar('Error', response.data);
     }
     callback();
   }
@@ -74,16 +73,15 @@ class MultipleChoiceController {
       }
     });
 
-    String response = await WebServices.savedAnswer(
+    ApiResponseModel response = await WebServices.saveAnswer(
       uc.getUser().token,
       questionModel.quizID,
       questionModel.questionNo,
       selectedAns,
     );
 
-    if (response == 'ok') {
-    } else {
-      Get.snackbar('Error', response);
+    if (response.statusCode != 200) {
+      Get.snackbar('Error', 'Save ans failed');
     }
     saveButtonOn = true;
     callback();

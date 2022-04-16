@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_470/controller/screen_controller/quiz_page_controller.dart';
+import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
-import 'package:flutter_application_470/controller/participation_status_controller.dart';
 import 'package:flutter_application_470/services/web_services.dart';
 import 'package:get/get.dart';
 
-import '../user_controller.dart';
+import '../user_controller/user_controller.dart';
 
 class ValueInputController {
   final QuestionModel questionModel;
-  final TextEditingController valueController = TextEditingController();
+  final TextEditingController valueController =
+      TextEditingController(); // holds text or value in the input box
+
   final UserModelController uc = Get.find();
-  final ParticipationStatusController psc = Get.find();
+
+  final QuizPageController psc = Get.find();
+
   bool submitButtonOn = true;
   bool saveButtonOn = true;
   ValueInputController({required this.questionModel}) {
@@ -39,17 +44,17 @@ class ValueInputController {
     saveButtonOn = false;
     callback();
 
-    String response = await WebServices.submitAnswer(
+    ApiResponseModel response = await WebServices.submitAnswer(
       uc.getUser().token,
       questionModel.quizID,
       questionModel.questionNo,
       [valueController.text],
     );
 
-    if (response == 'ok') {
-    } else {
+    if (response.statusCode != 200) {
       submitButtonOn = true;
-      Get.snackbar('Error', response);
+      saveButtonOn = true;
+      Get.snackbar('Error', response.data);
     }
     callback();
   }
@@ -58,16 +63,15 @@ class ValueInputController {
     saveButtonOn = false;
     callback();
 
-    String response = await WebServices.savedAnswer(
+    ApiResponseModel response = await WebServices.saveAnswer(
       uc.getUser().token,
       questionModel.quizID,
       questionModel.questionNo,
       [valueController.text],
     );
 
-    if (response == 'ok') {
-    } else {
-      Get.snackbar('Error', response);
+    if (response.statusCode != 200) {
+      Get.snackbar('Error', 'Save ans failed');
     }
     saveButtonOn = true;
     callback();

@@ -1,11 +1,15 @@
+/*
+This model holds the information for a single quiz. 
+*/
+
 class QuizModel {
-  final String quizId;
+  final String quizId; // each quiz has unique id
   final String quizName;
   final int totalScore;
   final String quizDescription;
   final DateTime startDate;
   final DateTime endDate;
-  final String status;
+  final String status; // determines if the quiz is upcoming, running or ended.
 
   QuizModel(
       {required this.quizId,
@@ -17,9 +21,11 @@ class QuizModel {
       required this.status});
 
   String getStatus() {
-    if (DateTime.now().isAfter(startDate) && DateTime.now().isBefore(endDate))
+    if (DateTime.now().isAfter(startDate) && DateTime.now().isBefore(endDate)) {
       return 'running';
-    else if (DateTime.now().isBefore(startDate)) return 'upcoming';
+    } else if (DateTime.now().isBefore(startDate)) {
+      return 'upcoming';
+    }
     return 'ended';
   }
 }

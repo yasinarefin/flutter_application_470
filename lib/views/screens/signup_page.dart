@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_470/controller/signup_controller.dart';
+import 'package:flutter_application_470/controller/screen_controller/signup_page_controller.dart';
+
+/*
+  find the associated controller in screen_controller/signup_page_controller
+*/
 
 class SignUpPage extends StatelessWidget {
   @override

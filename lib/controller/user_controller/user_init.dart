@@ -1,8 +1,8 @@
-import 'package:flutter_application_470/controller/user_controller.dart';
+import 'package:flutter_application_470/controller/user_controller/user_controller.dart';
+import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/user_model.dart';
 import 'package:flutter_application_470/services/storage_services.dart';
 import 'package:flutter_application_470/services/web_services.dart';
-import 'package:flutter_application_470/views/screens/home_page.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,7 +12,8 @@ class UserIntialize {
     String? token = await StorageServices.getToken();
 
     if (token == null) return false;
-    Map<String, String> user = await WebServices.getUser(token);
+    ApiResponseModel response = await WebServices.getUser(token);
+    Map<String, String> user = response.data;
 
     if (user.containsKey('error')) {
       return false;
@@ -35,7 +36,8 @@ class UserIntialize {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     if (token == null) return false;
-    Map<String, String> user = await WebServices.getUser(token);
+    ApiResponseModel response = await WebServices.getUser(token);
+    Map<String, String> user = response.data;
 
     if (user.containsKey('error')) {
       return false;

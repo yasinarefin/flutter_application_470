@@ -1,3 +1,4 @@
+import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/sign_up_form.dart';
 import 'package:flutter_application_470/services/web_services.dart';
 import 'package:get/get.dart';
@@ -27,14 +28,14 @@ class SignUpController {
           password: passwordController.text,
           firstName: firstNameController.text,
           lastName: lastNameController.text);
-      Future<String> res = WebServices.signUp(s);
+      Future<ApiResponseModel> res = WebServices.signUp(s);
       res.then((value) {
         callback();
-        if (value == 'ok') {
+        if (value.data == 'ok') {
           Get.back();
           Get.snackbar('Signup status', 'User created succesfully');
         } else {
-          Get.snackbar('Signup status', value);
+          Get.snackbar('Signup status', value.data);
         }
       });
     }

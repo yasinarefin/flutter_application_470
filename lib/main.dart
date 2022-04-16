@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_470/services/user_init.dart';
+import 'package:flutter_application_470/controller/user_controller/user_init.dart';
 import 'package:flutter_application_470/views/screens/home_page.dart';
 import 'package:flutter_application_470/views/screens/login_page.dart';
 import 'package:flutter_application_470/views/screens/quiz_page.dart';

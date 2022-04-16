@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_470/controller/user_controller.dart';
-import 'package:flutter_application_470/models/quiz_model.dart';
-import 'package:flutter_application_470/services/web_services.dart';
-import 'package:flutter_application_470/views/screens/login_page.dart';
+import 'package:flutter_application_470/controller/screen_controller/home_page_controller.dart';
+import 'package:flutter_application_470/controller/user_controller/user_controller.dart';
 import 'package:flutter_application_470/views/widgets/navigation_drawer.dart';
 import 'package:flutter_application_470/views/widgets/quiz_widget.dart';
 import 'package:get/get.dart';
 
+/*
+  find the associated controller in screen_controller/home_page_controller
+*/
+
 class HomePage extends StatelessWidget {
   static final routeName = '/home_page';
-  final UserModelController uc = Get.find();
+  final UserModelController uc = Get.find(); // get current logged in user
+  final HomePageController homePageController = HomePageController();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -19,7 +22,7 @@ class HomePage extends StatelessWidget {
           title: const Text('Quizzes'),
           actions: [
             PopupMenuButton(
-              onSelected: handleClick,
+              onSelected: homePageController.handleClick,
               itemBuilder: (context) {
                 return {'Logout'}.map((String choice) {
                   return PopupMenuItem<String>(
@@ -53,16 +56,19 @@ class HomePage extends StatelessWidget {
             Container(
               child: QuizListView(
                 quizStatus: 'running',
+                homePageController: homePageController,
               ),
             ),
             Container(
               child: QuizListView(
                 quizStatus: 'upcoming',
+                homePageController: homePageController,
               ),
             ),
             Container(
               child: QuizListView(
                 quizStatus: 'all',
+                homePageController: homePageController,
               ),
             ),
           ],
@@ -70,36 +76,32 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  void handleClick(String option) async {
-    if (option == 'Logout') {
-      await WebServices.logOut(uc.getUser().token);
-      Get.offNamed(LoginPage.routeName);
-    }
-  }
 }
 
 class QuizListView extends StatelessWidget {
-  final String quizStatus;
+  final String quizStatus; // determines the tab: running, upcoming, or ended
   final UserModelController uc = Get.find();
-  QuizListView({Key? key, required this.quizStatus}) : super(key: key);
+  final HomePageController homePageController;
+  QuizListView(
+      {Key? key, required this.quizStatus, required this.homePageController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<QuizModel>>(
-      future: WebServices.getQuizzes(uc.getUser().token, quizStatus),
+    return FutureBuilder<int>(
+      future: homePageController.getQuizzes(uc.getUser().token, quizStatus),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError || !snapshot.hasData) {
             return const Text('Error loading quizzes1');
           } else if (snapshot.data != null) {
-            var qList = snapshot.data as List<QuizModel>;
+            var qListSize = snapshot.data as int;
 
             return ListView.builder(
-              itemCount: qList.length,
+              itemCount: qListSize,
               itemBuilder: (context, i) {
                 return QuizDetails(
-                  quizModel: qList[i],
+                  quizModel: homePageController.getQuizModel(i),
                 );
               },
             );
@@ -114,3 +116,115 @@ class QuizListView extends StatelessWidget {
     );
   }
 }
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_application_470/controller/screen_controller/home_page_controller.dart';
+// import 'package:flutter_application_470/controller/user_controller.dart';
+// import 'package:flutter_application_470/models/quiz_model.dart';
+// import 'package:flutter_application_470/services/web_services.dart';
+// import 'package:flutter_application_470/views/widgets/navigation_drawer.dart';
+// import 'package:flutter_application_470/views/widgets/quiz_widget.dart';
+// import 'package:get/get.dart';
+
+// class HomePage extends StatelessWidget {
+//   static final routeName = '/home_page';
+//   final UserModelController uc = Get.find(); // get current logged in user
+//   final HomePageController homePageController = HomePageController();
+//   @override
+//   Widget build(BuildContext context) {
+//     return DefaultTabController(
+//       length: 3,
+//       child: Scaffold(
+//         appBar: AppBar(
+//           title: const Text('Quizzes'),
+//           actions: [
+//             PopupMenuButton(
+//               onSelected: homePageController.handleClick,
+//               itemBuilder: (context) {
+//                 return {'Logout'}.map((String choice) {
+//                   return PopupMenuItem<String>(
+//                     value: choice,
+//                     child: Text(choice),
+//                   );
+//                 }).toList();
+//               },
+//             ),
+//           ],
+//           bottom: const TabBar(
+//             tabs: [
+//               Tab(
+//                 text: 'Running',
+//                 icon: Icon(Icons.running_with_errors),
+//               ),
+//               Tab(
+//                 text: 'Upcoming',
+//                 icon: Icon(Icons.upcoming),
+//               ),
+//               Tab(
+//                 text: 'All',
+//                 icon: Icon(Icons.all_out),
+//               ),
+//             ],
+//           ),
+//         ),
+//         drawer: NavigationDrawer(),
+//         body: TabBarView(
+//           children: [
+//             Container(
+//               child: QuizListView(
+//                 quizStatus: 'running',
+//               ),
+//             ),
+//             Container(
+//               child: QuizListView(
+//                 quizStatus: 'upcoming',
+//               ),
+//             ),
+//             Container(
+//               child: QuizListView(
+//                 quizStatus: 'all',
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class QuizListView extends StatelessWidget {
+//   final String quizStatus; // determines the tab: running, upcoming, or ended
+//   final UserModelController uc = Get.find();
+//   QuizListView({Key? key, required this.quizStatus}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<List<QuizModel>>(
+//       future: WebServices.getQuizzes(uc.getUser().token, quizStatus),
+//       builder: (ctx, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.done) {
+//           if (snapshot.hasError || !snapshot.hasData) {
+//             return const Text('Error loading quizzes1');
+//           } else if (snapshot.data != null) {
+//             var qList = snapshot.data as List<QuizModel>;
+
+//             return ListView.builder(
+//               itemCount: qList.length,
+//               itemBuilder: (context, i) {
+//                 return QuizDetails(
+//                   quizModel: qList[i],
+//                 );
+//               },
+//             );
+//           } else {
+//             return const Text('Error loading quizzes');
+//           }
+//         }
+//         return const Center(
+//           child: CircularProgressIndicator(),
+//         );
+//       },
+//     );
+//   }
+// }

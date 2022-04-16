@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_470/controller/user_controller.dart';
+import 'package:flutter_application_470/controller/user_controller/user_controller.dart';
 import 'package:get/get.dart';
 
 class NavigationDrawer extends StatelessWidget {

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_470/controller/login_controller.dart';
+import 'package:flutter_application_470/controller/screen_controller/login_page_controller.dart';
 import 'package:flutter_application_470/views/screens/signup_page.dart';
 import 'package:get/get.dart';
+
+/*
+  find the associated controller in screen_controller/login_page_controller
+*/
 
 class LoginPage extends StatelessWidget {
   static final routeName = '/login_page';

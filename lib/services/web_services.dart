@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_470/models/api_response_model.dart';
 import 'package:flutter_application_470/models/participation_model.dart';
 import 'package:flutter_application_470/models/question_model.dart';
 import 'package:flutter_application_470/models/quiz_model.dart';
@@ -6,11 +7,17 @@ import 'package:flutter_application_470/models/sign_up_form.dart';
 import 'package:flutter_application_470/http_utils.dart';
 import 'package:flutter_application_470/services/storage_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter_application_470/services/user_init.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
+Here, all the api endpoints are kept.
+Note: No api call is performed here. 
+Here we store all the api endpoints which can later be called
+in the controllers 
+*/
+
 class WebServices {
-  static Future<bool> login(String email, String password) async {
+  static Future<ApiResponseModel> login(String email, String password) async {
     final loginResponse = await HTTPUtils.post(
       path: '/auth/login/',
       body: jsonEncode(<String, String>{
@@ -31,12 +38,12 @@ class WebServices {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
       }
-      return true;
+      return ApiResponseModel(statusCode: 200, data: true);
     }
-    return false;
+    return ApiResponseModel(statusCode: loginResponse.statusCode, data: false);
   }
 
-  static Future<bool> logOut(String token) async {
+  static Future<ApiResponseModel> logOut(String token) async {
     final prefs = await SharedPreferences.getInstance();
     kIsWeb
         ? await prefs.remove('token')
@@ -51,12 +58,12 @@ class WebServices {
       headers: {},
     );
     if (response.statusCode == 200) {
-      return true;
+      return ApiResponseModel(statusCode: 200, data: true);
     }
-    return false;
+    return ApiResponseModel(statusCode: response.statusCode, data: false);
   }
 
-  static Future<String> signUp(SignUpForm s) async {
+  static Future<ApiResponseModel> signUp(SignUpForm s) async {
     final signUpResponse = await HTTPUtils.post(
       path: '/user/create_user/',
       body: jsonEncode(<String, String>{
@@ -69,12 +76,16 @@ class WebServices {
       headers: {},
     );
     if (signUpResponse.statusCode == 201) {
-      return 'ok';
+      return ApiResponseModel(statusCode: 201, data: 'ok');
     }
-    return jsonDecode(signUpResponse.body)['message'];
+
+    return ApiResponseModel(
+      statusCode: signUpResponse.statusCode,
+      data: jsonDecode(signUpResponse.body)['message'],
+    );
   }
 
-  static Future<Map<String, String>> getUser(String token) async {
+  static Future<ApiResponseModel> getUser(String token) async {
     var headers = {
       "Authorization": token,
     };
@@ -82,37 +93,39 @@ class WebServices {
         await HTTPUtils.get(path: '/user/get_user/', headers: headers);
     if (response.statusCode == 200) {
       Map<String, String> obj = Map.castFrom(jsonDecode(response.body));
-      return obj;
+      return ApiResponseModel(
+        statusCode: response.statusCode,
+        data: obj,
+      );
     }
-    return {"error": "401"};
+    return ApiResponseModel(statusCode: response.statusCode);
   }
 
   // returns list of maps of quizzes
-  static Future<List<QuizModel>> getQuizzes(String token, String status) async {
+  static Future<ApiResponseModel> getQuizzes(
+      String token, String status) async {
     var headers = {
       "Authorization": token,
     };
     final response =
         await HTTPUtils.get(path: '/quiz/view/$status/', headers: headers);
-    if (response.statusCode == 200) {
-      List<QuizModel> obj = (jsonDecode(response.body) as List).map((e) {
-        return QuizModel(
-          quizId: e['quiz_id'],
-          quizName: e['name'],
-          totalScore: e['total_score'],
-          quizDescription: e['description'],
-          startDate: DateTime.parse(e['start_time']),
-          endDate: DateTime.parse(e['end_time']),
-          status: e['status'],
-        );
-      }).toList();
-      return obj;
-    }
-    return [];
+    List<QuizModel> obj = (jsonDecode(response.body) as List).map((e) {
+      return QuizModel(
+        quizId: e['quiz_id'],
+        quizName: e['name'],
+        totalScore: e['total_score'],
+        quizDescription: e['description'],
+        startDate: DateTime.parse(e['start_time']),
+        endDate: DateTime.parse(e['end_time']),
+        status: e['status'],
+      );
+    }).toList();
+
+    return ApiResponseModel(statusCode: response.statusCode, data: obj);
   }
 
   // get all question list
-  static Future<List<QuestionModel>> getQuestions(
+  static Future<ApiResponseModel> getQuestions(
       String token, String quizID) async {
     var headers = {
       "Authorization": token,
@@ -125,6 +138,7 @@ class WebServices {
       var decodedResponse = jsonDecode(response.body);
       List<dynamic> obj = decodedResponse['questions'];
       List<QuestionModel> questions = [];
+
       for (int i = 0; i < obj.length; i++) {
         questions.add(QuestionModel(
           quizID: quizID,
@@ -136,13 +150,15 @@ class WebServices {
         ));
       }
 
-      return questions;
+      return ApiResponseModel(statusCode: 200, data: questions);
     }
-    return [];
+    return ApiResponseModel(
+      statusCode: response.statusCode,
+    );
   }
 
   // submit an answer
-  static Future<String> submitAnswer(
+  static Future<ApiResponseModel> submitAnswer(
     String token,
     String quizID,
     int questionNo,
@@ -160,23 +176,27 @@ class WebServices {
         'Authorization': token,
       },
     );
+
     if (submitResponse.statusCode == 500) {
-      return "error";
-    }
-    if (submitResponse.statusCode == 200) {
-      return 'ok';
+      return ApiResponseModel(
+        statusCode: submitResponse.statusCode,
+      );
     }
     Map<String, dynamic> response = jsonDecode(submitResponse.body);
-    if (response.containsKey('message')) return response['message'];
-    return 'error';
+
+    return ApiResponseModel(
+      statusCode: submitResponse.statusCode,
+      data: response['message'],
+    );
   }
 
-  static Future<String> savedAnswer(
+  static Future<ApiResponseModel> saveAnswer(
     String token,
     String quizID,
     int questionNo,
     List<dynamic> ans,
   ) async {
+    print('aaa' + ans.toString());
     final submitResponse = await HTTPUtils.post(
       path: '/quiz/save_ans/',
       body: jsonEncode(<String, dynamic>{
@@ -188,19 +208,11 @@ class WebServices {
         'Authorization': token,
       },
     );
-    if (submitResponse.statusCode == 500) {
-      return "error";
-    }
-    if (submitResponse.statusCode == 200) {
-      return 'ok';
-    }
-    Map<String, dynamic> response = jsonDecode(submitResponse.body);
-    if (response.containsKey('message')) return response['message'];
-    return 'error';
+    return ApiResponseModel(statusCode: submitResponse.statusCode);
   }
 
   // get participation status
-  static Future<Map<String, dynamic>> getParticipationStatus(
+  static Future<ApiResponseModel> getParticipationStatus(
       String token, String quizID) async {
     var headers = {
       "Authorization": token,
@@ -218,8 +230,8 @@ class WebServices {
         savedAnswers: obj['saved_answers'],
         score: obj['score'],
       );
-      return {'result': participationModel};
+      return ApiResponseModel(statusCode: 200, data: participationModel);
     }
-    return {'error': 'no participation found'};
+    return ApiResponseModel(statusCode: response.statusCode);
   }
 }

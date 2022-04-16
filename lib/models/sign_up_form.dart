@@ -1,3 +1,6 @@
+/*
+This model holds the information for signing up a user. 
+*/
 class SignUpForm {
   final String email;
   final String username;
