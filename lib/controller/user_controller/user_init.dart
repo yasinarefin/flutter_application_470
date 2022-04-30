@@ -56,8 +56,6 @@ class UserIntialize {
     Get.put(UserModelController());
     UserModelController f = Get.find();
     f.setUserModel(model);
-    //Get.offNamed(HomePage.routeName);
-    // Get.snackbar('Login status', 'Login successful');
     return true;
   }
 }
