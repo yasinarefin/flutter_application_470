@@ -22,11 +22,6 @@ class QuizPageController extends GetxController {
     ApiResponseModel response = await WebServices.getQuestions(
         uc.getUser().token, quizModel.quizId); // api call to load questions
     questions = response.data;
-    // also load participation status for selected answers
-    // ParticipationStatusController psc = ParticipationStatusController();
-    //await psc.loadData(quizModel.quizId, quizModel);
-    //Get.put(psc);
-
     await loadParticipation();
     for (QuestionModel q in questions) {
       if (q.type == 'sc') {
@@ -63,28 +58,4 @@ class QuizPageController extends GetxController {
     }
     return participationModel.score.toString();
   }
-
-  // Future<void> loadData() async {
-  //   var participationStatus = await WebServices.getParticipationStatus(
-  //       uc.getUser().token, this.quizModel.quizId); // gets  a map
-  //   if (!participationStatus.containsKey('error')) {
-  //     participationModel = participationStatus['result'];
-  //   } else {
-  //     // otherwise initiate  a empty list
-  //     participationModel = ParticipationModel(
-  //       quizId: '',
-  //       userEmail: '',
-  //       submittedAnswers: [],
-  //       savedAnswers: [],
-  //       score: -1,
-  //     );
-  //   }
-  // }
-
-  // String getScore() {
-  //   if (participationModel.score == -1) {
-  //     return 'hidden';
-  //   }
-  //   return participationModel.score.toString();
-  // }
 }
